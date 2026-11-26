@@ -60,3 +60,55 @@ Without changing it, can we adjust the project file(s) to use the correct java?
 
 When importing project into existing workspace, do I have to check "Add project to working sets"?
 - No
+
+- 2026-11-26
+
+Make a plugin configuration option to set home even if not able to sleep, true by default. Bump version to 1.1.
+
+Add a command to change this accepting true or false and saving the setting immediately. Do not bump version this time (or any time unless I say so).
+
+Implement and document a reload subcommand.
+
+make the main command bedhome for brevity
+
+Make the permissions start with bedhome as well
+
+Make the success message gray instead of green, and have period instead of exclamation point. We don't have to go up a whole unit to set the home point, just a half, because the bed is only half a unit high. Is it possible to detect whether the head or the foot of the bed was clicked? If so lets always set home based on the foot of the bed. Also, if the bed is obstructed (first or second block above either head or foot is not air), don't set home, and instead show a warning saying bed is obstructed (home not set).
+
+Place any of the lines from GitHub's default Java.gitignore in .gitignore where applicable and remove any redundant lines you had:
+- paste that
+Then before any additional lines make a new commented section.
+```
+## Project-specific files
+```
+
+Add instructions in readme for disabling the "/home bed" point being set by essentials while clicking the bed, as that is now redundant.
+
+Recommend disabling these when using this plugin:
+   - `essentials.home.bed`
+   - `essentials.sethome.bed`
+Also add a subsection under that explaining applicable PermissionsEx operations:
+```
+/pex group Member add essentials.home
+/pex group Member remove essentials.home.bed
+/pex group Member remove essentials.sethome.bed
+/pex group Member remove essentials.sethome
+/pex reload
+```
+
+There is an issue where apparently the Member group still has those permissions by default. The remove commands didn't have an effect.
+
+No, then guests may be able to do it. Explain how to edit the default granted permissions instead.
+- paste plugins/Essentials/config.yml
+
+You hallucinated that, maybe from a later version of essentials. It is not in the config I just provided. Focus on that file and CB 1.2.5. Maybe look into the permission list, which has: home, home.others. See also
+sethome-multiple (recommend turning that off),  update-bed-at-daytime, and recommend respawn-at-home: true.
+- It had recommended `bedSetsHome: false` and said it was in the EssentialsHome section of the config but that settings isn't there and that setting doesn't match the variable naming conventions.
+
+What is "the vanilla bed spawn update"? When does a player respawn at bed in vanilla in MC 1.2.5? If it is vanilla why is respawn-at-home false (that would be a weird default--maybe it is something I set?)? What are we actually changing with update-bed-at-daytime, the same data as "/home" uses, or not? Does home.others only affect multi-home, or also use/set of the point "/home bed" uses?
+
+You're wrong, “/home bed” has been working in Essentials 2.9.2 on this server. I want it to do nothing, and never be set (No "Home set." message or action but ours. No additional numbered homes. No interception of Vanilla behavior. Just "/home" which goes to the "real" home we are setting in BedHomeClassic).
+
+Ok, everything works now with preventing setting home or home bed with commands for members, but now we have one issue: players can type "/home bed". Lets turn that command off via PermissionsEx.
+
+You shouldn't be looking for essentials.home.bed in the Essentials jar. Maybe look for home.bed or even home and the surrounding code.

@@ -25,8 +25,6 @@ replay_pid*
 
 ## Project-specific files
 bin/
-*.class
 .metadata/
 .settings/
-libs/*.jar
 !libs/.gitkeep

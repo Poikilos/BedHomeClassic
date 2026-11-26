@@ -1,20 +1,20 @@
 name: BedHomeClassic
 main: org.poikilos.bedhomeclassic.BedHomeClassic
-version: 1.0
+version: 1.1
 author: Poikilos
 description: Sets Essentials home when you sleep in a bed (Tekkit Classic / CB 1.2.5)
 softdepend: [Essentials]
 
 commands:
-  bedhomeclassic:
+  bedhome:
     description: BedHomeClassic admin commands
-    usage: /bedhomeclassic reload
-    permission: bedhomeclassic.admin
+    usage: /bedhome <reload|set-home-even-if-cannot-sleep <true|false>>
+    permission: bedhome.admin
 
 permissions:
-  bedhomeclassic.use:
+  bedhome.use:
     description: Allow bed to set home
     default: true
-  bedhomeclassic.admin:
+  bedhome.admin:
     description: Admin commands
     default: op

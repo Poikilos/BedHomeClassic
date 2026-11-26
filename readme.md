@@ -5,7 +5,8 @@ Sets your **real Essentials home** when you sleep in a bed. Compatible with Tekk
 ## What it does
 
 - On `PlayerBedEnterEvent` (sleeping in a bed), it sets the Essentials home named `"home"` (configurable).
-- The location is **1 block above the bed block** (center of the top face), not where you were standing.
+- The location is **half a block above the foot of the bed** (center), not where you were standing. If the head is clicked, the foot is found automatically.
+- If the first or second block above either the head or the foot is not air, the home is not set and a warning is shown.
 - Uses the Essentials API (`User.setHome(String, Location)`) so it does **not** require the `essentials.sethome` permission.
 - Soft-depends on Essentials. No extra commands; `/home` just works.
 
@@ -94,18 +95,65 @@ chmod +x build.sh
 
 Copy the resulting `BedHomeClassic.jar` into your Tekkit Classic server’s `plugins/` folder alongside Essentials.jar. Restart the server.
 
+## Essentials config recommendations
+
+These settings are from the Essentials 2.9.2 config. Adjust them in `plugins/Essentials/config.yml`.
+
+In this version, `/home bed` is not a named home. `Commandhome` treats the argument `bed` as a special case and teleports to the vanilla bed spawn (`Player.getBedSpawnLocation()`), if that location still contains a bed. The “Home set.” message on right-click comes from the same path: when `update-bed-at-daytime` is true, a bed click calls `setBedSpawnLocation` and then sends the `homeSet` message.
+
+### Stop Essentials from setting or announcing the bed point
+
+```yaml
+# Allows people to set their bed at daytime
+# Set false so right-clicking a bed does nothing (no setBedSpawnLocation, no "Home set." message).
+# Vanilla still sets the bed spawn only when the player successfully sleeps at night.
+update-bed-at-daytime: false
+```
+
+There is no config switch that disables the `/home bed` special case itself. It only works when a vanilla bed spawn is set. With the option above false, a daytime click never sets it. Sleeping at night still sets it (vanilla behavior, not intercepted).
+
+### No extra numbered homes
+
+```yaml
+# Recommend limiting to a single home so only the home BedHomeClassic sets is used.
+sethome-multiple:  
+  default: 1
+```
+
+Or remove the `sethome-multiple` block if you want to disable multiple homes entirely. The `home.others` entry in `player-commands` only controls `/home <otherplayer>` and is unrelated.
+
+### Do not intercept vanilla respawn
+
+```yaml
+# Stock default. Leave false so Essentials does not override vanilla respawn.
+# Players respawn at the bed only if they actually slept and the bed is still there.
+respawn-at-home: false
+```
+
+With these, `/home` (no arguments) uses the Essentials home that BedHomeClassic sets, and Essentials does not set or announce a bed home on click.
+
+After editing, restart or run `/essentials reload`.
+
 ## Permissions
 
-- `bedhomeclassic.use` — allow the bed to set home (default: true)
-- `bedhomeclassic.admin` — admin (default: op)
+- `bedhome.use` — allow the bed to set home (default: true)
+- `bedhome.admin` — admin commands (default: op)
+
+## Commands
+
+- `/bedhome reload` — reload the config from disk (requires `bedhome.admin`)
+- `/bedhome set-home-even-if-cannot-sleep <true|false>` — change the setting and save immediately (requires `bedhome.admin`)
 
 ## Config
 
 ```yaml
 enabled: true
 home-name: "home"
+# Set home on right-click even if the player cannot sleep (daytime, etc.)
+set-home-even-if-cannot-sleep: true
 messages:
-  home-set: "&aHome set to your bed!"
+  home-set: "&7Home set to your bed."
+  obstructed: "&cBed is obstructed (home not set)."
 ```
 
 ## License

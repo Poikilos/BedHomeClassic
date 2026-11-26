@@ -2,6 +2,7 @@ package org.poikilos.bedhomeclassic;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -71,39 +72,68 @@ public class BedListener implements Listener {
             return;
         }
 
-        Bed bedData = new Bed(bed.getType(), bed.getData());
-        Block foot = bed;
-        Block head = bed;
-        if (bedData.isHeadOfBed()) {
-            head = bed;
-            BlockFace facing = bedData.getFacing();
-            if (facing != null) {
-                foot = bed.getRelative(facing.getOppositeFace());
-            }
-        } else {
-            foot = bed;
-            BlockFace facing = bedData.getFacing();
-            if (facing != null) {
-                head = bed.getRelative(facing);
-            }
-        }
+        boolean alwaysSetFoot = plugin.getConfig().getBoolean("always-set-foot", false);
+        boolean setIfObstructed = plugin.getConfig().getBoolean("set-if-obstructed", true);
+        boolean setSpawn = plugin.getConfig().getBoolean("set-spawn", true);
+        boolean silentNight = plugin.getConfig().getBoolean("silent-night", true);
 
-        if (isObstructed(foot) || isObstructed(head)) {
+        Block target = bed;
+        if (alwaysSetFoot) {
+            Bed bedData = new Bed(bed.getType(), bed.getData());
+            Block foot = bed;
+            Block head = bed;
+            if (bedData.isHeadOfBed()) {
+                head = bed;
+                BlockFace facing = bedData.getFacing();
+                if (facing != null) {
+                    foot = bed.getRelative(facing.getOppositeFace());
+                }
+            } else {
+                foot = bed;
+                BlockFace facing = bedData.getFacing();
+                if (facing != null) {
+                    head = bed.getRelative(facing);
+                }
+            }
+            if (!setIfObstructed && (isObstructed(foot) || isObstructed(head))) {
+                String warn = plugin.getConfig().getString("messages.obstructed", "&cBed is obstructed (home not set).");
+                player.sendMessage(color(warn));
+                return;
+            }
+            target = foot;
+        } else if (!setIfObstructed && isObstructed(bed)) {
             String warn = plugin.getConfig().getString("messages.obstructed", "&cBed is obstructed (home not set).");
             player.sendMessage(color(warn));
             return;
         }
 
-        // Half a unit above the foot block (beds are only half a unit high)
-        Location homeLoc = foot.getLocation().clone().add(0.5, 0.5, 0.5);
+        // Half a unit above the target bed block
+        Location homeLoc = target.getLocation().clone().add(0.5, 0.5, 0.5);
         homeLoc.setYaw(player.getLocation().getYaw());
         homeLoc.setPitch(player.getLocation().getPitch());
 
         String homeName = plugin.getConfig().getString("home-name", "home");
         user.setHome(homeName, homeLoc);
 
+        if (setSpawn) {
+            player.setBedSpawnLocation(target.getLocation());
+        }
+
+        if (silentNight && isNight(player.getWorld())) {
+            return;
+        }
+
         String msg = plugin.getConfig().getString("messages.home-set", "&7Home set to your bed.");
         player.sendMessage(color(msg));
+    }
+
+    private boolean isNight(World world) {
+        if (world == null) {
+            return false;
+        }
+        long time = world.getTime() % 24000;
+        // Vanilla sleep window is roughly 12541-23458
+        return time >= 12541 && time <= 23458;
     }
 
     private boolean isObstructed(Block bedPart) {

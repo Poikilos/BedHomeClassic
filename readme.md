@@ -5,8 +5,8 @@ Sets your **real Essentials home** when you sleep in a bed. Compatible with Tekk
 ## What it does
 
 - On `PlayerBedEnterEvent` (sleeping in a bed), it sets the Essentials home named `"home"` (configurable).
-- The location is **half a block above the foot of the bed** (center), not where you were standing. If the head is clicked, the foot is found automatically.
-- If the first or second block above either the head or the foot is not air, the home is not set and a warning is shown.
+- The location is **half a block above the clicked bed block** by default. Set `always-set-foot: true` to always use the foot instead.
+- If `set-if-obstructed` is false and the first or second block above the bed is not air, the home is not set and a warning is shown.
 - Uses the Essentials API (`User.setHome(String, Location)`) so it does **not** require the `essentials.sethome` permission.
 - Soft-depends on Essentials. No extra commands; `/home` just works.
 
@@ -151,6 +151,14 @@ enabled: true
 home-name: "home"
 # Set home on right-click even if the player cannot sleep (daytime, etc.)
 set-home-even-if-cannot-sleep: true
+# If true, always set home at the foot of the bed. If false, use the clicked block.
+always-set-foot: false
+# If true, set home even when the bed is obstructed (skips the check).
+set-if-obstructed: true
+# If true, also set the vanilla bed spawn (the point /home bed uses).
+set-spawn: true
+# If true, suppress the success message at night to avoid a double message with Essentials.
+silent-night: true
 messages:
   home-set: "&7Home set to your bed."
   obstructed: "&cBed is obstructed (home not set)."

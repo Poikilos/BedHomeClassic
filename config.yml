@@ -1,5 +1,5 @@
 # BedHomeClassic config
-# Location is set half a block above the foot of the bed.
+# Location is set half a block above the bed block (or the foot, if always-set-foot is true).
 
 messages:
   home-set: "&7Home set to your bed."
@@ -12,3 +12,11 @@ enabled: true
 home-name: "home"
 # Set home on right-click even if the player cannot sleep (daytime, etc.)
 set-home-even-if-cannot-sleep: true
+# If true, always set home at the foot of the bed. If false, use the clicked block.
+always-set-foot: false
+# If true, set home even when the bed is obstructed (skips the check).
+set-if-obstructed: true
+# If true, also set the vanilla bed spawn (the point /home bed uses).
+set-spawn: true
+# If true, suppress the success message at night to avoid a double message with Essentials.
+silent-night: true

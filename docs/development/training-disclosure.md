@@ -112,3 +112,9 @@ You're wrong, “/home bed” has been working in Essentials 2.9.2 on this serve
 Ok, everything works now with preventing setting home or home bed with commands for members, but now we have one issue: players can type "/home bed". Lets turn that command off via PermissionsEx.
 
 You shouldn't be looking for essentials.home.bed in the Essentials jar. Maybe look for home.bed or even home and the surrounding code.
+
+- 2026-11-26
+
+At night, the home-set message (or bed is obstructed) happens twice. To keep the points synchronized, lets make a couple changes. Add the option always-set-foot that defaults to false. If false, skip foot detection and set home to whatever bed block was right-clicked. Add a set-if-obstructed option that defaults to true (and sets home and shows success instead of obstructed if true--skips obstructed check for optimization actually). Add a "set-spawn" option, true by default, which if true, sets the player's spawn point as if they had slept (same data as "/home bed" uses), under the scope of the same logic as when we set home. For example, assuming essentials "update-bed-at-daytime: false", we right-click the bed at daytime, and our plugin supersedes that and sets the spawn/bed point (if `set-home-even-if-cannot-sleep: true`). Just to cooperate even better and try to eliminate redundant messages, have a silent-night setting that defaults to true, so even if we set the point (if not obstructed, or set-if-obstructed is true), it will be silent so the player won't get two messages (One from essentials, one from us).
+
+Bump version to 1.2.5.2

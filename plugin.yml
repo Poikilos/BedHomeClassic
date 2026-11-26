@@ -1,6 +1,6 @@
 name: BedHomeClassic
 main: org.poikilos.bedhomeclassic.BedHomeClassic
-version: 1.1
+version: 1.2.5.2
 author: Poikilos
 description: Sets Essentials home when you sleep in a bed (Tekkit Classic / CB 1.2.5)
 softdepend: [Essentials]

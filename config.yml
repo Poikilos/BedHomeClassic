@@ -1,0 +1,11 @@
+# BedHomeClassic config
+# Location is set 1 block above the bed block.
+
+messages:
+  home-set: "&aHome set to your bed!"
+  no-essentials: "&cEssentials not found. BedHomeClassic requires Essentials."
+  disabled: "&cBed home setting is disabled."
+
+enabled: true
+# Name of the Essentials home to set. "home" is the default for /home
+home-name: "home"

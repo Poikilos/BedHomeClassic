@@ -156,6 +156,7 @@ always-set-foot: false
 # If true, set home even when the bed is obstructed (skips the check).
 set-if-obstructed: true
 # If true, also set the vanilla bed spawn (the point /home bed uses).
+# Set on the next tick as well so vanilla/Essentials cannot overwrite it.
 set-spawn: true
 # If true, suppress the success message at night to avoid a double message with Essentials.
 silent-night: true

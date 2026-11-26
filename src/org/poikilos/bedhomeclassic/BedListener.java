@@ -116,7 +116,22 @@ public class BedListener implements Listener {
         user.setHome(homeName, homeLoc);
 
         if (setSpawn) {
-            player.setBedSpawnLocation(target.getLocation());
+            // Exact bed block location (Essentials /home bed requires the block to still be a bed)
+            final Location spawnLoc = target.getLocation().clone();
+            spawnLoc.setX(target.getX());
+            spawnLoc.setY(target.getY());
+            spawnLoc.setZ(target.getZ());
+            // Set now and again next tick so vanilla/Essentials cannot overwrite it
+            player.setBedSpawnLocation(spawnLoc);
+            user.setBedSpawnLocation(spawnLoc);
+            final Player p = player;
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                public void run() {
+                    if (p.isOnline()) {
+                        p.setBedSpawnLocation(spawnLoc);
+                    }
+                }
+            }, 1L);
         }
 
         if (silentNight && isNight(player.getWorld())) {
